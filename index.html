@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0f766e">
+<title>FL Business & Finance Study Coach</title>
+<style>
+:root{
+  --bg:#0b1220; --panel:#121c2e; --panel2:#1a2740; --ink:#e8eef7; --muted:#9fb0c8;
+  --teal:#14b8a6; --teal-d:#0f766e; --blue:#3b82f6; --green:#22c55e; --red:#ef4444;
+  --amber:#f59e0b; --line:#243450; --chip:#22324f;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:17px;line-height:1.5;}
+.app{max-width:760px;margin:0 auto;padding:0 16px 96px;}
+header.top{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,#0b1220 70%,rgba(11,18,32,0));
+  padding:14px 0 10px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.2px}
+.logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--teal),var(--blue));
+  display:flex;align-items:center;justify-content:center;font-weight:800;color:#04141a;font-size:15px}
+.brand small{display:block;font-weight:500;color:var(--muted);font-size:11px;letter-spacing:.3px}
+.who{font-size:12px;color:var(--muted);background:var(--chip);border:1px solid var(--line);
+  padding:6px 10px;border-radius:20px;cursor:pointer;white-space:nowrap}
+h1,h2,h3{line-height:1.25}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin:14px 0;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:520px){.grid{grid-template-columns:1fr}}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;cursor:pointer;
+  transition:transform .08s ease,border-color .15s;display:flex;flex-direction:column;gap:6px}
+.tile:active{transform:scale(.985)}
+.tile:hover{border-color:var(--teal)}
+.tile .ic{font-size:24px}
+.tile h3{margin:2px 0 0;font-size:18px}
+.tile p{margin:0;color:var(--muted);font-size:13.5px}
+.btn{appearance:none;border:0;border-radius:12px;padding:14px 16px;font-size:16px;font-weight:650;
+  cursor:pointer;width:100%;color:#04141a;background:var(--teal);transition:filter .15s,transform .06s}
+.btn:active{transform:scale(.99)}
+.btn:hover{filter:brightness(1.06)}
+.btn.sec{background:var(--panel2);color:var(--ink);border:1px solid var(--line)}
+.btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+.btn.sm{padding:10px 12px;font-size:14px;width:auto}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row.tight{gap:8px}
+.muted{color:var(--muted)}
+.center{text-align:center}
+.pill{display:inline-block;font-size:12px;padding:4px 10px;border-radius:20px;background:var(--chip);
+  border:1px solid var(--line);color:var(--muted)}
+.pill.d1{color:#7ee0d3;border-color:#1f4a44;background:#0e2a27}
+.pill.d2{color:#ffd58a;border-color:#553d12;background:#2a2008}
+.pill.d3{color:#ff9ea6;border-color:#5a1f25;background:#2a0e11}
+.back{background:transparent;border:0;color:var(--muted);font-size:15px;cursor:pointer;padding:8px 0;display:flex;align-items:center;gap:6px}
+.progressbar{height:8px;border-radius:6px;background:var(--panel2);overflow:hidden;border:1px solid var(--line)}
+.progressbar > i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--blue));width:0}
+.choice{display:block;width:100%;text-align:left;background:var(--panel2);border:1px solid var(--line);
+  color:var(--ink);border-radius:12px;padding:14px;margin:8px 0;cursor:pointer;font-size:16px;transition:.12s}
+.choice:hover{border-color:var(--teal)}
+.choice.correct{border-color:var(--green);background:#0f2c1c}
+.choice.wrong{border-color:var(--red);background:#2c1416}
+.choice.dim{opacity:.5}
+.choice .k{display:inline-block;width:24px;height:24px;line-height:24px;text-align:center;border-radius:7px;
+  background:var(--chip);margin-right:10px;font-weight:700;font-size:13px}
+input.txt{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:12px;
+  padding:14px;font-size:17px;outline:none}
+input.txt:focus{border-color:var(--teal)}
+.feedback{border-radius:12px;padding:13px 14px;margin:12px 0;font-size:15px;border:1px solid var(--line)}
+.feedback.hint{background:#241d07;border-color:#5a4712;color:#ffe1a3}
+.feedback.good{background:#0f2c1c;border-color:#1f6b42;color:#b8f3cf}
+.feedback.bad{background:#2c1416;border-color:#6b1f25;color:#ffc2c7}
+.feedback.reveal{background:#101d33;border-color:#274168;color:#cfe0ff}
+.feedback b{color:#fff}
+.kbd{font-family:ui-monospace,Menlo,Consolas,monospace;background:#0a1322;border:1px solid var(--line);
+  padding:1px 6px;border-radius:6px;font-size:13px}
+.statline{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+.statline:last-child{border-bottom:0}
+.big{font-size:34px;font-weight:800;letter-spacing:-.5px}
+.flash{min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  cursor:pointer;padding:24px}
+.flash .term{font-size:24px;font-weight:750}
+.flash .def{font-size:17px;color:var(--ink)}
+.tag{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.area-chip{font-size:12.5px;padding:8px 12px;border-radius:20px;background:var(--chip);border:1px solid var(--line);
+  cursor:pointer;color:var(--ink)}
+.area-chip.on{background:var(--teal-d);border-color:var(--teal);color:#eafffb;font-weight:650}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--panel2);
+  border:1px solid var(--line);padding:12px 16px;border-radius:12px;font-size:14px;z-index:100;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.spacer{height:6px}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.dot.g{background:var(--green)}.dot.r{background:var(--red)}.dot.y{background:var(--amber)}
+ul.clean{margin:8px 0;padding-left:20px}ul.clean li{margin:7px 0}
+.note{font-size:12.5px;color:var(--muted)}
+hr.sep{border:0;border-top:1px solid var(--line);margin:16px 0}
+a.link{color:var(--teal)}
+.fab-help{position:fixed;right:16px;bottom:18px;background:var(--panel2);border:1px solid var(--line);color:var(--muted);
+  width:40px;height:40px;border-radius:50%;font-size:18px;cursor:pointer;z-index:60}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <div class="logo">B&amp;F</div>
+      <div>FL Business &amp; Finance Coach
+        <small>HVAC Class B &middot; Builder's Guide to Accounting</small>
+      </div>
+    </div>
+    <div class="who" id="whoChip" onclick="switchUser()">studying as &mdash;</div>
+  </header>
+  <div id="view"></div>
+</div>
+<button class="fab-help" title="How to use" onclick="showHelp()">?</button>
+
+<script>
+/* =========================================================================
+   FL Business & Finance Study Coach  —  single-file study app
+   Content modeled on standard Florida Construction Business & Finance exam
+   topics and general construction-accounting principles aligned to
+   "The Builder's Guide to Accounting." Original wording (not copied text).
+   ========================================================================= */
+
+/* ----------------------------- CONTENT BANK ----------------------------- */
+const AREAS = [
+  {id:"fundamentals", name:"Accounting Fundamentals", icon:"📘",
+   summary:"The accounting equation, what bookkeeping does, and why builders track the numbers.",
+   principles:[
+     "The accounting equation is the foundation of all bookkeeping: Assets = Liabilities + Owner's Equity. It must always stay in balance.",
+     "Every transaction affects at least two accounts and keeps the equation balanced — this is the basis of double-entry bookkeeping.",
+     "Bookkeeping is the recording of transactions; accounting is the broader process of classifying, summarizing, interpreting, and reporting that information.",
+     "Owner's equity represents the owner's claim on the business: what's left after liabilities are subtracted from assets (also called net worth).",
+     "An 'account' is a record of all increases and decreases for a single item, such as Cash, Accounts Receivable, or Loans Payable.",
+     "The going-concern assumption: records are kept assuming the business will continue operating, not be liquidated tomorrow.",
+     "The business-entity concept: the company's finances are kept separate from the owner's personal finances."
+   ]},
+  {id:"debits", name:"Debits, Credits & Double-Entry", icon:"⚖️",
+   summary:"How debits and credits work, normal balances, and the rules that never change.",
+   principles:[
+     "Debit means the LEFT side of an account; credit means the RIGHT side. Neither word means 'good' or 'bad,' 'increase' or 'decrease' by itself.",
+     "Assets and expenses increase with a DEBIT and decrease with a credit. Their normal balance is a debit.",
+     "Liabilities, owner's equity, and revenue increase with a CREDIT and decrease with a debit. Their normal balance is a credit.",
+     "For every transaction, total debits must equal total credits. If they don't, the entry is wrong.",
+     "A handy memory aid is DEAD-CLER (or DEALER): Debits raise Expenses, Assets, Dividends/Draws; Credits raise Liabilities, Equity, Revenue.",
+     "Contra accounts carry a balance opposite their category — for example, Accumulated Depreciation is a contra-asset with a normal credit balance."
+   ]},
+  {id:"cycle", name:"Journals, Ledgers & the Cycle", icon:"📒",
+   summary:"How a transaction flows from source document to financial statement.",
+   principles:[
+     "The accounting cycle: transaction → journal (the book of original entry) → ledger (posting) → trial balance → adjustments → financial statements → closing.",
+     "The journal records transactions in date order (chronologically); the general ledger groups them by account.",
+     "Posting is the process of transferring amounts from the journal to the proper ledger accounts.",
+     "A trial balance lists every account's balance to check that total debits equal total credits. It catches some — but not all — errors.",
+     "The chart of accounts is the master list of every account a company uses, usually numbered by type (assets, liabilities, equity, revenue, expenses).",
+     "Closing entries zero out temporary accounts (revenue, expenses, draws) at period end and move the result into equity/retained earnings.",
+     "Temporary accounts reset each period; permanent (real) accounts — assets, liabilities, equity — carry their balances forward."
+   ]},
+  {id:"cashaccrual", name:"Cash vs. Accrual & Methods", icon:"🔁",
+   summary:"The two main accounting methods and when revenue and expenses get recorded.",
+   principles:[
+     "Cash basis records revenue when cash is received and expenses when cash is paid. Simple, but it can distort the true picture of a project-based business.",
+     "Accrual basis records revenue when earned and expenses when incurred, regardless of when cash changes hands. It matches income with the costs that produced it.",
+     "The matching principle: expenses should be recorded in the same period as the revenue they helped generate.",
+     "The revenue-recognition principle: record revenue when it is earned (work performed / goods delivered), not necessarily when billed or collected.",
+     "Construction contractors often use percentage-of-completion (recognize revenue as the job progresses) or completed-contract (recognize at the end) methods.",
+     "Percentage-of-completion gives a smoother, more accurate picture of long jobs; completed-contract defers all profit until the job is done."
+   ]},
+  {id:"statements", name:"Financial Statements", icon:"📊",
+   summary:"The balance sheet, income statement, and cash flow statement — what each tells you.",
+   principles:[
+     "The balance sheet is a snapshot at a point in time showing Assets = Liabilities + Equity.",
+     "The income statement (profit & loss) covers a period of time and shows Revenue − Expenses = Net Income (profit or loss).",
+     "The cash flow statement shows where cash came from and went, across operating, investing, and financing activities.",
+     "Gross profit = Revenue − Cost of Goods Sold (direct job costs). Net profit = Gross profit − Overhead and other expenses.",
+     "Current assets (cash, receivables, inventory) are expected to convert to cash within one year; current liabilities are due within one year.",
+     "Retained earnings is accumulated profit kept in the business rather than paid out to owners.",
+     "Financial statements should be prepared consistently period to period so results can be compared (the consistency principle)."
+   ]},
+  {id:"jobcost", name:"Job Costing & Cost Control", icon:"🏗️",
+   summary:"Tracking direct and indirect costs, markup vs. margin, and estimating profit.",
+   principles:[
+     "Direct costs can be traced to a specific job: materials, job labor, subcontractors, equipment rental, permits.",
+     "Indirect costs (overhead) keep the business running but aren't tied to one job: office rent, insurance, office salaries, utilities.",
+     "Job costing assigns all direct costs to each job so you know whether that job actually made money.",
+     "Markup is added to your cost to set price; margin is profit as a percentage of the selling price. They are NOT the same number.",
+     "Markup % = (Price − Cost) ÷ Cost. Margin % = (Price − Cost) ÷ Price. A 50% markup is only a 33.3% margin.",
+     "Overhead must be recovered through the price of jobs; under-recovering overhead is a common way contractors lose money while staying 'busy.'",
+     "Cost overruns are caught early by comparing actual job costs to the original estimate (budget vs. actual)."
+   ]},
+  {id:"payroll", name:"Payroll & Payroll Taxes", icon:"💵",
+   summary:"Gross vs. net pay, withholdings, employer taxes, and worker classification.",
+   principles:[
+     "Gross pay is total earnings before deductions; net pay (take-home) is what's left after withholdings.",
+     "Employers withhold federal income tax, plus the employee's share of Social Security and Medicare (FICA), from each paycheck.",
+     "FICA is split: 6.2% Social Security + 1.45% Medicare = 7.65% withheld from the employee, and the employer matches the same 7.65%.",
+     "Employers also pay unemployment taxes: FUTA (federal) and SUTA (state). These are employer costs, not withheld from workers.",
+     "Withheld taxes are a liability — they belong to the government and must be deposited on schedule, not spent by the business.",
+     "An independent contractor (1099) controls how the work is done and pays their own taxes; an employee (W-2) has taxes withheld. Misclassifying workers carries serious penalties.",
+     "Workers' compensation insurance covers job-site injuries and is generally required for construction employees."
+   ]},
+  {id:"depreciation", name:"Depreciation & Assets", icon:"📉",
+   summary:"Spreading the cost of equipment over its useful life, and how assets are valued.",
+   principles:[
+     "Depreciation spreads the cost of a long-lived asset (truck, equipment) over its useful life instead of expensing it all at once.",
+     "Only assets that wear out are depreciated. Land is NOT depreciated because it doesn't wear out.",
+     "Straight-line depreciation = (Cost − Salvage value) ÷ Useful life, giving the same expense each year.",
+     "Salvage (residual) value is the estimated worth of the asset at the end of its useful life.",
+     "Book value = original cost − accumulated depreciation. It is not the same as market value.",
+     "A capital expenditure buys or improves a long-term asset (depreciated over time); a revenue expense is consumed now (expensed immediately).",
+     "Accelerated methods (like declining balance or MACRS for taxes) take more depreciation in the early years."
+   ]},
+  {id:"ratios", name:"Financial Ratios & Analysis", icon:"📐",
+   summary:"Liquidity, profitability, and leverage ratios that reveal business health.",
+   principles:[
+     "The current ratio = Current Assets ÷ Current Liabilities. It measures short-term ability to pay bills; above 1.0 means current assets cover current debts.",
+     "The quick (acid-test) ratio excludes inventory: (Current Assets − Inventory) ÷ Current Liabilities — a stricter liquidity test.",
+     "Working capital = Current Assets − Current Liabilities. Positive working capital is a cushion for day-to-day operations.",
+     "Net profit margin = Net Income ÷ Revenue. It shows how many cents of each sales dollar become profit.",
+     "Debt-to-equity = Total Liabilities ÷ Owner's Equity. Higher means more reliance on borrowed money (more leverage and risk).",
+     "Return on equity = Net Income ÷ Owner's Equity, showing the return the owner earns on their investment.",
+     "Ratios are most useful compared over time and against industry benchmarks, not as a single number in isolation."
+   ]},
+  {id:"finance", name:"Budgeting, Cash Flow & Finance", icon:"🏦",
+   summary:"Cash management, budgets, financing, and why profit isn't the same as cash.",
+   principles:[
+     "A budget is a plan that projects revenue and expenses; comparing actual to budget tells you where you're off course.",
+     "Profit and cash are not the same — a profitable company can still run out of cash if receivables come in slower than bills go out.",
+     "Cash flow is the timing of money in and out. Managing the gap between paying for a job and getting paid is critical for contractors.",
+     "Retainage (retention) is a portion of payment withheld by the customer until the job is complete, which ties up the contractor's cash.",
+     "A line of credit provides flexible short-term borrowing to smooth cash gaps; a term loan is borrowed once and repaid over a fixed schedule.",
+     "Accounts receivable is money owed TO you by customers; accounts payable is money you owe to suppliers and subs.",
+     "Aging reports group receivables/payables by how overdue they are (30/60/90 days) so you can chase the right accounts."
+   ]}
+];
+
+const GLOSSARY = [
+  {t:"Assets", d:"Everything a business owns that has value — cash, receivables, equipment, inventory, land.", area:"fundamentals"},
+  {t:"Liabilities", d:"Debts and obligations the business owes to others, such as loans, accounts payable, and accrued taxes.", area:"fundamentals"},
+  {t:"Owner's Equity", d:"The owner's claim on the business; assets minus liabilities. Also called net worth or capital.", area:"fundamentals"},
+  {t:"Accounting Equation", d:"Assets = Liabilities + Owner's Equity. Must always remain in balance.", area:"fundamentals"},
+  {t:"Bookkeeping", d:"The systematic recording of a business's financial transactions.", area:"fundamentals"},
+  {t:"Account", d:"A record of all increases and decreases for one specific item, such as Cash or Accounts Payable.", area:"fundamentals"},
+  {t:"Business-Entity Concept", d:"The idea that a business's finances are kept separate from the owner's personal finances.", area:"fundamentals"},
+  {t:"Going Concern", d:"The assumption that a business will continue operating into the foreseeable future.", area:"fundamentals"},
+  {t:"Debit", d:"An entry on the LEFT side of an account. Increases assets and expenses.", area:"debits"},
+  {t:"Credit", d:"An entry on the RIGHT side of an account. Increases liabilities, equity, and revenue.", area:"debits"},
+  {t:"Double-Entry Bookkeeping", d:"A system where every transaction has equal debits and credits, keeping the books in balance.", area:"debits"},
+  {t:"Normal Balance", d:"The side (debit or credit) on which an account usually carries its balance.", area:"debits"},
+  {t:"Contra Account", d:"An account with a balance opposite its category, e.g., Accumulated Depreciation (a contra-asset).", area:"debits"},
+  {t:"Journal", d:"The book of original entry where transactions are first recorded, in date order.", area:"cycle"},
+  {t:"Ledger", d:"A record that groups all transactions by account; the general ledger holds all accounts.", area:"cycle"},
+  {t:"Posting", d:"Transferring amounts from the journal to the appropriate ledger accounts.", area:"cycle"},
+  {t:"Trial Balance", d:"A list of all account balances used to verify that total debits equal total credits.", area:"cycle"},
+  {t:"Chart of Accounts", d:"The organized, numbered master list of all accounts a business uses.", area:"cycle"},
+  {t:"Closing Entries", d:"Entries that zero out temporary accounts at period end and transfer the result to equity.", area:"cycle"},
+  {t:"Temporary Accounts", d:"Revenue, expense, and draw accounts that reset to zero each period.", area:"cycle"},
+  {t:"Permanent Accounts", d:"Asset, liability, and equity accounts whose balances carry forward period to period.", area:"cycle"},
+  {t:"Cash Basis", d:"Recording revenue when cash is received and expenses when cash is paid.", area:"cashaccrual"},
+  {t:"Accrual Basis", d:"Recording revenue when earned and expenses when incurred, regardless of cash timing.", area:"cashaccrual"},
+  {t:"Matching Principle", d:"Expenses are recorded in the same period as the revenue they helped earn.", area:"cashaccrual"},
+  {t:"Revenue Recognition", d:"Recording revenue when it is earned, not necessarily when billed or collected.", area:"cashaccrual"},
+  {t:"Percentage-of-Completion", d:"Recognizing contract revenue gradually as a job progresses.", area:"cashaccrual"},
+  {t:"Completed-Contract", d:"Recognizing all contract revenue and profit only when the job is finished.", area:"cashaccrual"},
+  {t:"Balance Sheet", d:"A financial statement showing assets, liabilities, and equity at a single point in time.", area:"statements"},
+  {t:"Income Statement", d:"Also called profit & loss; shows revenue minus expenses over a period of time.", area:"statements"},
+  {t:"Cash Flow Statement", d:"Reports cash movement across operating, investing, and financing activities.", area:"statements"},
+  {t:"Gross Profit", d:"Revenue minus cost of goods sold (direct job costs).", area:"statements"},
+  {t:"Net Income", d:"The bottom-line profit after all expenses, including overhead, are subtracted from revenue.", area:"statements"},
+  {t:"Retained Earnings", d:"Accumulated profits kept in the business rather than distributed to owners.", area:"statements"},
+  {t:"Current Asset", d:"An asset expected to convert to cash within one year (cash, receivables, inventory).", area:"statements"},
+  {t:"Direct Costs", d:"Costs traceable to a specific job: materials, job labor, subcontractors, permits.", area:"jobcost"},
+  {t:"Indirect Costs (Overhead)", d:"Costs of running the business not tied to one job: office rent, insurance, admin salaries.", area:"jobcost"},
+  {t:"Job Costing", d:"Assigning all direct costs to a specific job to measure that job's profitability.", area:"jobcost"},
+  {t:"Markup", d:"Amount added to cost to set price, expressed as a percent of COST.", area:"jobcost"},
+  {t:"Margin", d:"Profit expressed as a percent of the SELLING PRICE.", area:"jobcost"},
+  {t:"Cost of Goods Sold (COGS)", d:"The direct costs of producing the work sold during a period.", area:"jobcost"},
+  {t:"Gross Pay", d:"An employee's total earnings before any deductions.", area:"payroll"},
+  {t:"Net Pay", d:"Take-home pay after all withholdings are deducted from gross pay.", area:"payroll"},
+  {t:"FICA", d:"Federal Insurance Contributions Act tax: Social Security (6.2%) + Medicare (1.45%), matched by employer.", area:"payroll"},
+  {t:"FUTA", d:"Federal Unemployment Tax Act — an employer-paid unemployment tax.", area:"payroll"},
+  {t:"SUTA", d:"State Unemployment Tax — an employer-paid state unemployment tax.", area:"payroll"},
+  {t:"Withholding", d:"Money an employer holds back from a paycheck to remit to taxing authorities.", area:"payroll"},
+  {t:"W-2 Employee", d:"A worker whose taxes are withheld and who is directed by the employer.", area:"payroll"},
+  {t:"1099 Contractor", d:"An independent worker who controls how work is done and pays their own taxes.", area:"payroll"},
+  {t:"Workers' Compensation", d:"Insurance covering medical costs and lost wages for job-site injuries.", area:"payroll"},
+  {t:"Depreciation", d:"Allocating the cost of a long-lived asset over its useful life.", area:"depreciation"},
+  {t:"Straight-Line Depreciation", d:"Equal depreciation each year: (Cost − Salvage) ÷ Useful life.", area:"depreciation"},
+  {t:"Salvage Value", d:"The estimated value of an asset at the end of its useful life.", area:"depreciation"},
+  {t:"Book Value", d:"Original cost minus accumulated depreciation.", area:"depreciation"},
+  {t:"Capital Expenditure", d:"Spending to acquire or improve a long-term asset, depreciated over time.", area:"depreciation"},
+  {t:"Useful Life", d:"The estimated period an asset will be productively used.", area:"depreciation"},
+  {t:"Current Ratio", d:"Current Assets ÷ Current Liabilities; a measure of short-term liquidity.", area:"ratios"},
+  {t:"Quick Ratio", d:"(Current Assets − Inventory) ÷ Current Liabilities; a stricter liquidity test.", area:"ratios"},
+  {t:"Working Capital", d:"Current Assets minus Current Liabilities; the cushion for daily operations.", area:"ratios"},
+  {t:"Net Profit Margin", d:"Net Income ÷ Revenue; profit as a percent of sales.", area:"ratios"},
+  {t:"Debt-to-Equity", d:"Total Liabilities ÷ Owner's Equity; a measure of financial leverage.", area:"ratios"},
+  {t:"Return on Equity", d:"Net Income ÷ Owner's Equity; the return earned on the owner's investment.", area:"ratios"},
+  {t:"Budget", d:"A financial plan projecting future revenue and expenses.", area:"finance"},
+  {t:"Cash Flow", d:"The timing and movement of money into and out of the business.", area:"finance"},
+  {t:"Retainage", d:"A portion of contract payment withheld by the customer until completion.", area:"finance"},
+  {t:"Accounts Receivable", d:"Money owed to the business by its customers.", area:"finance"},
+  {t:"Accounts Payable", d:"Money the business owes to suppliers and subcontractors.", area:"finance"},
+  {t:"Line of Credit", d:"A flexible borrowing arrangement used to cover short-term cash gaps.", area:"finance"},
+  {t:"Aging Report", d:"A schedule grouping receivables or payables by how overdue they are.", area:"finance"}
+];
+
+/* Questions. type: mc | def | math. difficulty 1-3.
+   mc: choices[], answer = index. def: accept[] keywords (lowercased). math: answer number, tol. */
+const QUESTIONS = [
+  /* ---- fundamentals ---- */
+  {id:"f1",area:"fundamentals",type:"mc",d:1,q:"What is the fundamental accounting equation?",
+   choices:["Assets = Liabilities − Equity","Assets = Liabilities + Owner's Equity","Revenue = Assets − Expenses","Equity = Assets + Liabilities"],answer:1,
+   hints:["It always has to stay in balance.","Think of what the owner is left with after debts.","Assets equal what you owe plus what you own free and clear."],
+   exp:"Assets = Liabilities + Owner's Equity. Both sides always balance."},
+  {id:"f2",area:"fundamentals",type:"math",d:2,q:"A company has $180,000 in assets and $110,000 in liabilities. What is the owner's equity? (enter the dollar amount)",
+   answer:70000,tol:1,hints:["Rearrange the accounting equation.","Equity = Assets − Liabilities.","180,000 − 110,000 = ?"],
+   exp:"Owner's Equity = Assets − Liabilities = $180,000 − $110,000 = $70,000."},
+  {id:"f3",area:"fundamentals",type:"def",d:2,q:"Define 'owner's equity' in your own words.",
+   accept:["assets minus liabilities","owner","net worth","claim","what's left","what is left","leftover"],
+   hints:["It's what the equation gives you after subtracting debts.","Think 'net worth' of the business.","It equals assets minus liabilities."],
+   exp:"Owner's equity is the owner's claim on the business — assets minus liabilities (net worth)."},
+  {id:"f4",area:"fundamentals",type:"mc",d:1,q:"Which best describes the difference between bookkeeping and accounting?",
+   choices:["They are the same thing","Bookkeeping records transactions; accounting classifies, summarizes, and interprets them","Accounting only deals with taxes","Bookkeeping is only for large companies"],answer:1,
+   hints:["One is the raw recording step.","Accounting is the bigger-picture process.","Bookkeeping feeds data into accounting."],
+   exp:"Bookkeeping is recording transactions; accounting classifies, summarizes, interprets, and reports them."},
+  {id:"f5",area:"fundamentals",type:"mc",d:2,q:"The idea that a business's finances must be kept separate from the owner's personal finances is the:",
+   choices:["Going-concern assumption","Matching principle","Business-entity concept","Consistency principle"],answer:2,
+   hints:["It's about separation of business and personal.","Think of the business as its own 'entity.'","The word 'entity' is in the name."],
+   exp:"The business-entity concept keeps company finances separate from the owner's personal finances."},
+  {id:"f6",area:"fundamentals",type:"math",d:2,q:"If liabilities are $45,000 and owner's equity is $95,000, what are total assets?",
+   answer:140000,tol:1,hints:["Use the accounting equation directly.","Assets = Liabilities + Equity.","45,000 + 95,000 = ?"],
+   exp:"Assets = Liabilities + Owner's Equity = $45,000 + $95,000 = $140,000."},
+
+  /* ---- debits ---- */
+  {id:"d1",area:"debits",type:"mc",d:1,q:"A debit is an entry on which side of an account?",
+   choices:["The right side","The left side","The bottom","Whichever side increases it"],answer:1,
+   hints:["Debit and credit are just positions.","Left or right?","Debit = left, always."],
+   exp:"A debit is always the LEFT side of an account; a credit is the right side."},
+  {id:"d2",area:"debits",type:"mc",d:2,q:"Which type of account increases with a DEBIT?",
+   choices:["Liabilities","Revenue","Owner's equity","Assets"],answer:3,
+   hints:["Remember DEAD: Debits raise Expenses, Assets, Draws.","Liabilities, equity, and revenue go up with credits.","Cash is an asset — it goes up with a debit."],
+   exp:"Assets (and expenses and draws) increase with a debit. Liabilities, equity, and revenue increase with credits."},
+  {id:"d3",area:"debits",type:"def",d:2,q:"In double-entry bookkeeping, what must be true of total debits and total credits for every transaction?",
+   accept:["equal","same","balance","match","equal each other"],
+   hints:["The system is built on balance.","Compare the two totals.","Debits must ___ credits."],
+   exp:"Total debits must always equal total credits for every transaction."},
+  {id:"d4",area:"debits",type:"mc",d:2,q:"Accumulated Depreciation is an example of a:",
+   choices:["Revenue account","Contra-asset account","Liability account","Temporary account"],answer:1,
+   hints:["It reduces the value of an asset.","Its balance is opposite the normal asset balance.","'Contra' means opposite."],
+   exp:"Accumulated Depreciation is a contra-asset: it carries a credit balance that offsets the asset's debit balance."},
+  {id:"d5",area:"debits",type:"mc",d:3,q:"A contractor buys a $5,000 tool with cash. Which entry is correct?",
+   choices:["Debit Cash $5,000; Credit Tools $5,000","Debit Tools $5,000; Credit Cash $5,000","Debit Tools $5,000; Credit Revenue $5,000","Credit Tools $5,000; Credit Cash $5,000"],answer:1,
+   hints:["One asset increases, another decreases.","Tools (asset) go up with a debit; cash goes down with a credit.","Debits must equal credits, and you can't credit two accounts here."],
+   exp:"Tools (asset) increase with a debit $5,000; Cash (asset) decreases with a credit $5,000. The equation stays balanced."},
+
+  /* ---- cycle ---- */
+  {id:"c1",area:"cycle",type:"mc",d:1,q:"Which is the 'book of original entry' where transactions are first recorded?",
+   choices:["The ledger","The trial balance","The journal","The balance sheet"],answer:2,
+   hints:["It records things in date order first.","'Original entry' is the clue.","It starts with J."],
+   exp:"The journal is the book of original entry; transactions are first recorded there in date order."},
+  {id:"c2",area:"cycle",type:"def",d:2,q:"What is 'posting' in the accounting cycle?",
+   accept:["transfer","journal to ledger","moving","ledger","copy"],
+   hints:["It moves data between two records.","From the journal to the ___.","It's the transfer of amounts to ledger accounts."],
+   exp:"Posting is transferring amounts from the journal to the proper ledger accounts."},
+  {id:"c3",area:"cycle",type:"mc",d:2,q:"What is the main purpose of a trial balance?",
+   choices:["To calculate profit","To verify total debits equal total credits","To pay taxes","To list customers"],answer:1,
+   hints:["It's a check on the books.","It compares two column totals.","Debits should equal credits."],
+   exp:"A trial balance verifies that total debits equal total credits before statements are prepared."},
+  {id:"c4",area:"cycle",type:"mc",d:2,q:"Which accounts get zeroed out by closing entries at the end of a period?",
+   choices:["Assets and liabilities","Temporary accounts (revenue, expenses, draws)","Cash only","Permanent accounts"],answer:1,
+   hints:["Some accounts reset each period.","Revenue and expenses don't carry over.","Permanent accounts stay; temporary ones close."],
+   exp:"Closing entries zero out temporary accounts (revenue, expenses, draws) and move the result to equity."},
+  {id:"c5",area:"cycle",type:"def",d:1,q:"What is the chart of accounts?",
+   accept:["list of accounts","master list","all accounts","numbered list"],
+   hints:["It's a master reference.","It lists every account the business uses.","Usually numbered by type."],
+   exp:"The chart of accounts is the organized master list of every account a business uses."},
+
+  /* ---- cashaccrual ---- */
+  {id:"ca1",area:"cashaccrual",type:"mc",d:1,q:"Under the cash basis of accounting, revenue is recorded when:",
+   choices:["The work is performed","Cash is received","The invoice is sent","The contract is signed"],answer:1,
+   hints:["Cash basis follows the money.","It's literally in the name.","Revenue is booked when cash comes in."],
+   exp:"Cash basis records revenue when cash is received and expenses when cash is paid."},
+  {id:"ca2",area:"cashaccrual",type:"mc",d:2,q:"The matching principle says expenses should be recorded:",
+   choices:["When paid in cash","In the same period as the revenue they helped earn","At year-end only","Before revenue is recorded"],answer:1,
+   hints:["It's about pairing costs with income.","Match the expense to the revenue it produced.","Same period as the related revenue."],
+   exp:"The matching principle records expenses in the same period as the revenue they helped generate."},
+  {id:"ca3",area:"cashaccrual",type:"def",d:2,q:"Name the contractor revenue method that recognizes revenue gradually as a job progresses.",
+   accept:["percentage of completion","percentage-of-completion","percent complete","poc","percentage"],
+   hints:["It tracks how far along the job is.","Based on the % of work done.","Percentage-of-______."],
+   exp:"Percentage-of-completion recognizes revenue gradually as the job progresses, matching income to work performed."},
+  {id:"ca4",area:"cashaccrual",type:"mc",d:3,q:"A roofing job spans two years. Which method defers ALL profit until the job is finished?",
+   choices:["Percentage-of-completion","Cash basis","Completed-contract","Accrual basis"],answer:2,
+   hints:["One method waits for the very end.","Profit shows up only at completion.","'Completed' is the clue."],
+   exp:"The completed-contract method recognizes all revenue and profit only when the job is complete."},
+  {id:"ca5",area:"cashaccrual",type:"mc",d:2,q:"Accrual accounting records revenue when it is:",
+   choices:["Collected in cash","Earned","Deposited in the bank","Reported on taxes"],answer:1,
+   hints:["Accrual ignores the timing of cash.","It's about when you do the work.","Revenue is booked when earned."],
+   exp:"Accrual basis records revenue when earned and expenses when incurred, regardless of cash timing."},
+
+  /* ---- statements ---- */
+  {id:"s1",area:"statements",type:"mc",d:1,q:"Which financial statement is a snapshot at a single point in time?",
+   choices:["Income statement","Balance sheet","Cash flow statement","Trial balance"],answer:1,
+   hints:["One statement is a moment; another is a period.","It shows assets, liabilities, and equity.","Think 'as of' a date."],
+   exp:"The balance sheet is a point-in-time snapshot of Assets = Liabilities + Equity."},
+  {id:"s2",area:"statements",type:"math",d:2,q:"Revenue is $500,000 and cost of goods sold is $320,000. What is gross profit?",
+   answer:180000,tol:1,hints:["Gross profit uses only direct costs.","Gross profit = Revenue − COGS.","500,000 − 320,000 = ?"],
+   exp:"Gross profit = Revenue − COGS = $500,000 − $320,000 = $180,000."},
+  {id:"s3",area:"statements",type:"math",d:2,q:"Gross profit is $180,000 and total overhead is $130,000. What is net profit?",
+   answer:50000,tol:1,hints:["Subtract overhead from gross profit.","Net profit = Gross profit − Overhead.","180,000 − 130,000 = ?"],
+   exp:"Net profit = Gross profit − Overhead = $180,000 − $130,000 = $50,000."},
+  {id:"s4",area:"statements",type:"mc",d:2,q:"The income statement reports results over:",
+   choices:["A single instant","A period of time","Only one transaction","The life of the company"],answer:1,
+   hints:["It's the opposite of a snapshot.","Think 'for the month/quarter/year ended.'","It covers a span of time."],
+   exp:"The income statement (P&L) covers a period of time, showing Revenue − Expenses = Net Income."},
+  {id:"s5",area:"statements",type:"def",d:2,q:"What are 'retained earnings'?",
+   accept:["profit kept","accumulated profit","reinvested","kept in the business","not distributed","not paid out"],
+   hints:["It's about profit the owners didn't take.","Earnings that stay in the company.","Accumulated profit kept in the business."],
+   exp:"Retained earnings are accumulated profits kept in the business instead of paid out to owners."},
+  {id:"s6",area:"statements",type:"mc",d:1,q:"Which of these is a current asset?",
+   choices:["A delivery truck","Office building","Accounts receivable","A 10-year bank loan"],answer:2,
+   hints:["Current = converts to cash within a year.","Trucks and buildings are long-term.","Money customers owe you soon is current."],
+   exp:"Accounts receivable is a current asset — expected to convert to cash within one year."},
+
+  /* ---- jobcost ---- */
+  {id:"j1",area:"jobcost",type:"mc",d:1,q:"Which of these is a DIRECT job cost?",
+   choices:["Office rent","Owner's salary","Materials for the job","General liability insurance"],answer:2,
+   hints:["Direct = traceable to one job.","Overhead items keep the office running.","Materials go straight into the project."],
+   exp:"Materials are a direct cost — traceable to a specific job. Rent and insurance are overhead (indirect)."},
+  {id:"j2",area:"jobcost",type:"math",d:3,q:"A job costs $8,000 and you sell it for $10,000. What is the MARKUP percentage? (enter just the number)",
+   answer:25,tol:0.5,hints:["Markup is based on COST.","Markup % = (Price − Cost) ÷ Cost.","(10,000 − 8,000) ÷ 8,000 = ?"],
+   exp:"Markup % = (Price − Cost) ÷ Cost = ($2,000 ÷ $8,000) = 25%."},
+  {id:"j3",area:"jobcost",type:"math",d:3,q:"A job costs $8,000 and you sell it for $10,000. What is the MARGIN percentage? (enter just the number)",
+   answer:20,tol:0.5,hints:["Margin is based on the SELLING PRICE.","Margin % = (Price − Cost) ÷ Price.","(10,000 − 8,000) ÷ 10,000 = ?"],
+   exp:"Margin % = (Price − Cost) ÷ Price = ($2,000 ÷ $10,000) = 20%. Note it's lower than the 25% markup."},
+  {id:"j4",area:"jobcost",type:"mc",d:2,q:"Why do markup and margin differ for the same job?",
+   choices:["They are calculated on different bases (cost vs. price)","Margin includes tax","Markup ignores profit","They are actually the same"],answer:0,
+   hints:["Look at the denominator of each.","One divides by cost, the other by price.","Different base = different percentage."],
+   exp:"Markup is a percent of cost; margin is a percent of selling price. Same dollars, different base, different %."},
+  {id:"j5",area:"jobcost",type:"def",d:2,q:"What is job costing?",
+   accept:["assign","track","direct costs","specific job","profitability","cost per job"],
+   hints:["It's about tracking costs per project.","Assign direct costs to each job.","Tells you if a job made money."],
+   exp:"Job costing assigns all direct costs to a specific job so you can measure that job's profitability."},
+  {id:"j6",area:"jobcost",type:"mc",d:2,q:"Failing to recover overhead in your pricing usually leads to:",
+   choices:["Higher profits","Losing money while staying busy","Lower taxes","More cash on hand"],answer:1,
+   hints:["Overhead doesn't disappear if you ignore it.","Busy isn't the same as profitable.","Unrecovered overhead eats your profit."],
+   exp:"If overhead isn't recovered in pricing, you can stay busy yet lose money — a classic contractor trap."},
+
+  /* ---- payroll ---- */
+  {id:"p1",area:"payroll",type:"mc",d:1,q:"Net pay is best described as:",
+   choices:["Total earnings before deductions","Take-home pay after withholdings","Only overtime pay","The employer's tax cost"],answer:1,
+   hints:["'Net' means after subtractions.","It's what lands in the worker's pocket.","Gross minus withholdings."],
+   exp:"Net pay is take-home pay: gross pay minus all withholdings."},
+  {id:"p2",area:"payroll",type:"math",d:2,q:"What is the total FICA rate withheld from an employee's paycheck (Social Security + Medicare), as a percent?",
+   answer:7.65,tol:0.05,hints:["Add the two FICA pieces.","6.2% + 1.45%.","Social Security plus Medicare."],
+   exp:"FICA withheld from the employee = 6.2% Social Security + 1.45% Medicare = 7.65% (employer matches it)."},
+  {id:"p3",area:"payroll",type:"mc",d:2,q:"Which payroll tax is paid by the EMPLOYER and not withheld from the worker?",
+   choices:["Federal income tax","Employee FICA","FUTA (unemployment)","Employee's Medicare"],answer:2,
+   hints:["Unemployment taxes are an employer cost.","Withholdings come out of the worker's check; this doesn't.","FUTA/SUTA are employer-paid."],
+   exp:"FUTA (and SUTA) unemployment taxes are paid by the employer, not withheld from the employee."},
+  {id:"p4",area:"payroll",type:"mc",d:3,q:"A worker controls how the work is done and pays their own taxes. They are most likely:",
+   choices:["A W-2 employee","An independent (1099) contractor","An officer","Exempt from all taxes"],answer:1,
+   hints:["Control over 'how' points to independence.","No taxes are withheld for this worker.","Think 1099 vs. W-2."],
+   exp:"That describes an independent (1099) contractor, who controls the work and pays their own taxes."},
+  {id:"p5",area:"payroll",type:"def",d:2,q:"Why are withheld payroll taxes considered a liability to the business?",
+   accept:["owed","government","not yours","must remit","belong","pay to","remit"],
+   hints:["The money isn't the company's to keep.","It's owed to someone else.","It must be remitted to the government."],
+   exp:"Withheld taxes belong to the government and must be remitted — until then they're a liability, not the company's money."},
+  {id:"p6",area:"payroll",type:"math",d:2,q:"An employee's gross pay is $1,000. Using the 7.65% employee FICA rate, how much FICA is withheld? (dollars)",
+   answer:76.5,tol:0.1,hints:["Multiply gross by the FICA rate.","1,000 × 7.65%.","1,000 × 0.0765 = ?"],
+   exp:"FICA withheld = $1,000 × 7.65% = $76.50."},
+
+  /* ---- depreciation ---- */
+  {id:"dp1",area:"depreciation",type:"mc",d:1,q:"Which asset is NOT depreciated?",
+   choices:["A work truck","Office equipment","Land","HVAC tools"],answer:2,
+   hints:["Depreciation applies to things that wear out.","One of these never wears out.","It's the ground itself."],
+   exp:"Land is not depreciated because it does not wear out. Trucks, equipment, and tools are depreciated."},
+  {id:"dp2",area:"depreciation",type:"math",d:2,q:"Equipment costs $20,000 with a $2,000 salvage value and a 6-year life. What is the annual straight-line depreciation?",
+   answer:3000,tol:1,hints:["Use (Cost − Salvage) ÷ Life.","(20,000 − 2,000) ÷ 6.","18,000 ÷ 6 = ?"],
+   exp:"Straight-line = (Cost − Salvage) ÷ Life = ($20,000 − $2,000) ÷ 6 = $3,000 per year."},
+  {id:"dp3",area:"depreciation",type:"def",d:2,q:"Define 'book value' of an asset.",
+   accept:["cost minus","accumulated depreciation","original cost minus depreciation","cost less depreciation"],
+   hints:["It starts from what you paid.","Subtract the depreciation taken so far.","Cost − accumulated depreciation."],
+   exp:"Book value = original cost − accumulated depreciation (not the same as market value)."},
+  {id:"dp4",area:"depreciation",type:"math",d:3,q:"Using the prior example ($3,000/yr straight-line), what is the book value after 2 years if cost was $20,000?",
+   answer:14000,tol:1,hints:["Two years of depreciation have been taken.","Accumulated depreciation = 2 × 3,000 = 6,000.","20,000 − 6,000 = ?"],
+   exp:"Book value = $20,000 − (2 × $3,000) = $20,000 − $6,000 = $14,000."},
+  {id:"dp5",area:"depreciation",type:"mc",d:2,q:"Buying a $30,000 truck that lasts several years is a:",
+   choices:["Revenue expense","Capital expenditure","Withholding","Current liability"],answer:1,
+   hints:["It's a long-term asset, not consumed now.","It will be depreciated over time.","'Capital' spending buys long-term assets."],
+   exp:"A truck is a capital expenditure — a long-term asset depreciated over its useful life."},
+
+  /* ---- ratios ---- */
+  {id:"r1",area:"ratios",type:"math",d:2,q:"Current assets are $150,000 and current liabilities are $100,000. What is the current ratio? (enter a number)",
+   answer:1.5,tol:0.05,hints:["Current ratio divides assets by liabilities.","Current Assets ÷ Current Liabilities.","150,000 ÷ 100,000 = ?"],
+   exp:"Current ratio = Current Assets ÷ Current Liabilities = $150,000 ÷ $100,000 = 1.5."},
+  {id:"r2",area:"ratios",type:"math",d:2,q:"Current assets $150,000, current liabilities $100,000. What is working capital? (dollars)",
+   answer:50000,tol:1,hints:["Working capital is a subtraction, not a ratio.","Current Assets − Current Liabilities.","150,000 − 100,000 = ?"],
+   exp:"Working capital = Current Assets − Current Liabilities = $150,000 − $100,000 = $50,000."},
+  {id:"r3",area:"ratios",type:"mc",d:2,q:"The quick (acid-test) ratio differs from the current ratio because it:",
+   choices:["Adds back depreciation","Excludes inventory","Includes long-term debt","Uses revenue instead of assets"],answer:1,
+   hints:["It's a stricter version of liquidity.","Inventory can be slow to sell.","Quick ratio leaves out inventory."],
+   exp:"The quick ratio excludes inventory: (Current Assets − Inventory) ÷ Current Liabilities."},
+  {id:"r4",area:"ratios",type:"math",d:2,q:"Net income is $40,000 on revenue of $500,000. What is the net profit margin as a percent?",
+   answer:8,tol:0.2,hints:["Margin compares profit to sales.","Net Income ÷ Revenue × 100.","40,000 ÷ 500,000 = ?"],
+   exp:"Net profit margin = Net Income ÷ Revenue = $40,000 ÷ $500,000 = 8%."},
+  {id:"r5",area:"ratios",type:"mc",d:3,q:"A high debt-to-equity ratio generally indicates:",
+   choices:["More reliance on borrowed money and higher risk","More cash in the bank","Lower expenses","Higher profit margins"],answer:0,
+   hints:["It compares debt to the owner's stake.","More debt relative to equity means more leverage.","Leverage cuts both ways — more risk."],
+   exp:"A high debt-to-equity ratio means heavy reliance on borrowed money, signaling more leverage and risk."},
+  {id:"r6",area:"ratios",type:"def",d:1,q:"What does the current ratio measure?",
+   accept:["liquidity","pay short-term","short-term","ability to pay","cover current"],
+   hints:["It's about paying near-term bills.","Short-term financial health.","Ability to cover current liabilities."],
+   exp:"The current ratio measures short-term liquidity — the ability to cover current liabilities with current assets."},
+
+  /* ---- finance ---- */
+  {id:"fn1",area:"finance",type:"mc",d:2,q:"Why can a profitable contractor still run out of cash?",
+   choices:["Profit and cash timing are different","Profit is always negative","Taxes refund slowly","Cash never matters"],answer:0,
+   hints:["Think about WHEN money actually moves.","You can earn profit but wait to get paid.","Bills can come due before receivables arrive."],
+   exp:"Profit is earned on paper, but if receivables come in slower than bills go out, cash can still run dry."},
+  {id:"fn2",area:"finance",type:"def",d:2,q:"What is retainage (retention) on a construction contract?",
+   accept:["withheld","held back","until complete","portion","percentage withheld","completion"],
+   hints:["The customer keeps part of the payment.","It's released at the end of the job.","A withheld portion until completion."],
+   exp:"Retainage is a portion of payment the customer withholds until the job is complete, tying up the contractor's cash."},
+  {id:"fn3",area:"finance",type:"mc",d:1,q:"Accounts receivable represents:",
+   choices:["Money you owe suppliers","Money customers owe you","Cash in the bank","Equipment you own"],answer:1,
+   hints:["'Receivable' = you will receive it.","It's money coming IN.","Customers owe it to you."],
+   exp:"Accounts receivable is money owed TO you by customers. Accounts payable is what you owe others."},
+  {id:"fn4",area:"finance",type:"mc",d:2,q:"Which financing tool is best for smoothing short-term cash gaps?",
+   choices:["A 15-year mortgage","A line of credit","Selling equity","A completed-contract method"],answer:1,
+   hints:["You want flexible, short-term borrowing.","Draw it down and pay it back as needed.","It's a revolving credit arrangement."],
+   exp:"A line of credit provides flexible short-term borrowing to smooth cash gaps between paying and getting paid."},
+  {id:"fn5",area:"finance",type:"def",d:1,q:"What is a budget?",
+   accept:["plan","projection","projected","forecast","estimate of revenue","financial plan"],
+   hints:["It looks forward, not backward.","A plan for income and expenses.","Projected revenue and expenses."],
+   exp:"A budget is a financial plan projecting future revenue and expenses, used to compare against actual results."},
+  {id:"fn6",area:"finance",type:"mc",d:2,q:"An aging report is used to:",
+   choices:["Depreciate equipment","Group receivables/payables by how overdue they are","Calculate payroll taxes","Set markup percentages"],answer:1,
+   hints:["It sorts accounts by time.","30/60/90 days past due.","Helps you chase overdue accounts."],
+   exp:"An aging report groups receivables or payables by how overdue they are (30/60/90 days) to prioritize collections."}
+];
+
+/* ----------------------------- STATE / STORAGE ----------------------------- */
+let USER = "Courtney";
+const KEY = ()=>"flbf_"+USER.toLowerCase().replace(/[^a-z0-9]/g,"");
+let DB = {qstats:{}, seen:0, correct:0, sessions:0, glossarySeen:{}};
+
+function load(){
+  try{ const raw=localStorage.getItem(KEY()); if(raw) DB=Object.assign(DB,JSON.parse(raw)); }catch(e){}
+  if(!DB.qstats) DB.qstats={}; if(!DB.glossarySeen) DB.glossarySeen={};
+}
+function save(){ try{ localStorage.setItem(KEY(),JSON.stringify(DB)); }catch(e){} }
+function initUser(){
+  let u=localStorage.getItem("flbf_currentUser");
+  if(!u){ u="Courtney"; localStorage.setItem("flbf_currentUser",u); }
+  USER=u; load();
+}
+function switchUser(){
+  const name=prompt("Whose progress? Type a name (e.g., Courtney, or your study partner's name):",USER);
+  if(name && name.trim()){ save(); USER=name.trim(); localStorage.setItem("flbf_currentUser",USER);
+    DB={qstats:{},seen:0,correct:0,sessions:0,glossarySeen:{}}; load(); render(); }
+}
+
+/* ----------------------------- HELPERS ----------------------------- */
+const $=(s)=>document.querySelector(s);
+function el(html){ const t=document.createElement("template"); t.innerHTML=html.trim(); return t.content.firstChild; }
+function areaById(id){ return AREAS.find(a=>a.id===id); }
+function qstat(id){ return DB.qstats[id] || (DB.qstats[id]={seen:0,correct:0,wrong:0,streak:0}); }
+function escapeHtml(s){ return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function toast(msg){ const t=el(`<div class="toast">${msg}</div>`); document.body.appendChild(t); setTimeout(()=>t.remove(),1800); }
+function difLabel(d){ return d===1?"Easy":d===2?"Medium":"Hard"; }
+
+function accuracy(){ return DB.seen? Math.round(100*DB.correct/DB.seen):0; }
+function masteredCount(){ return Object.values(DB.qstats).filter(s=>s.correct>=2 && s.streak>=2).length; }
+function wrongPool(){ return QUESTIONS.filter(q=>{const s=DB.qstats[q.id]; return s && s.wrong>0 && s.streak<2;}); }
+
+/* Adaptive difficulty: unlock harder questions as accuracy/mastery grows */
+function unlockedMaxDifficulty(){
+  const m=masteredCount(), acc=accuracy();
+  if(m>=18 || (DB.seen>=25 && acc>=80)) return 3;
+  if(m>=6 || (DB.seen>=10 && acc>=65)) return 2;
+  return 2; // medium available early so it's not too easy; hard gated
+}
+
+/* Build a weighted question list for a test */
+function buildTest(areaIds, count){
+  let pool=QUESTIONS.filter(q=>areaIds.includes(q.area));
+  const maxD=unlockedMaxDifficulty();
+  // keep within unlocked difficulty, but always allow if user specifically narrow
+  let avail=pool.filter(q=>q.d<=maxD);
+  if(avail.length<count) avail=pool;
+  // weight: wrong questions and unseen get higher weight
+  const weighted=[];
+  avail.forEach(q=>{
+    const s=DB.qstats[q.id]; let w=1;
+    if(!s||s.seen===0) w=3;
+    else if(s.wrong>0 && s.streak<2) w=5;       // recycle missed
+    else if(s.streak>=2) w=0.5;                  // mastered, show less
+    for(let i=0;i<Math.round(w*2);i++) weighted.push(q);
+  });
+  // sample without replacement
+  const chosen=[]; const used=new Set();
+  while(chosen.length<Math.min(count,avail.length) && weighted.length){
+    const q=weighted[Math.floor(Math.random()*weighted.length)];
+    if(!used.has(q.id)){ used.add(q.id); chosen.push(q); }
+    if(used.size>=avail.length) break;
+  }
+  // shuffle order
+  for(let i=chosen.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[chosen[i],chosen[j]]=[chosen[j],chosen[i]];}
+  return chosen;
+}
+
+/* Answer checking */
+function normalize(s){ return (s||"").toString().toLowerCase().replace(/[$,%]/g,"").replace(/\s+/g," ").trim(); }
+function checkDef(input, accept){
+  const n=normalize(input); if(n.length<2) return false;
+  return accept.some(k=>n.includes(normalize(k)));
+}
+function checkMath(input, answer, tol){
+  const v=parseFloat((input||"").toString().replace(/[$,%\s]/g,""));
+  if(isNaN(v)) return false;
+  return Math.abs(v-answer) <= (tol||0.001);
+}
+
+/* ----------------------------- VIEWS ----------------------------- */
+let NAV=[]; // simple history stack of render fns
+function go(fn){ NAV.push(fn); fn(); }
+function back(){ NAV.pop(); const prev=NAV[NAV.length-1]||home; prev(); }
+function render(){ const cur=NAV[NAV.length-1]||home; cur(); updateWho(); }
+function updateWho(){ $("#whoChip").innerHTML="studying as &middot; <b>"+escapeHtml(USER)+"</b>"; }
+
+function home(){
+  NAV=[home];
+  const acc=accuracy(), mastered=masteredCount(), total=QUESTIONS.length;
+  const wrong=wrongPool().length;
+  $("#view").innerHTML=`
+    <div class="card">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <div><div class="tag">Your progress</div>
+          <div class="big">${acc}%<span style="font-size:15px;color:var(--muted);font-weight:500"> accuracy</span></div></div>
+        <div class="center"><div class="big" style="color:var(--teal)">${mastered}</div><div class="note">mastered / ${total}</div></div>
+      </div>
+      <div class="spacer"></div>
+      <div class="progressbar"><i style="width:${Math.min(100,Math.round(100*mastered/total))}%"></i></div>
+      <div class="note" style="margin-top:8px">${DB.seen} questions answered &middot; ${wrong} in your retry pile &middot; difficulty unlocked: up to <b>${difLabel(unlockedMaxDifficulty())}</b></div>
+    </div>
+
+    <div class="grid">
+      <div class="tile" onclick="go(studyMenu)"><div class="ic">📚</div><h3>Study Principles</h3><p>Learn the key concepts area by area, no pressure.</p></div>
+      <div class="tile" onclick="go(glossaryMenu)"><div class="ic">🃏</div><h3>Glossary Flashcards</h3><p>Tap to flip. ${GLOSSARY.length} terms you'll be tested on.</p></div>
+      <div class="tile" onclick="go(testSetup)"><div class="ic">📝</div><h3>Take a Test</h3><p>Pick exam areas, get mixed random questions with hints.</p></div>
+      <div class="tile" onclick="startReview()"><div class="ic">🔁</div><h3>Review Mistakes</h3><p>${wrong? wrong+" question(s) to nail down":"Nothing missed yet — go take a test"}.</p></div>
+      <div class="tile" onclick="go(statsView)"><div class="ic">📈</div><h3>My Stats</h3><p>See accuracy by area and what to focus on.</p></div>
+      <div class="tile" onclick="showHelp()"><div class="ic">❓</div><h3>How to Use</h3><p>Quick guide + how to add to your phone.</p></div>
+    </div>
+    <p class="note center" style="margin-top:18px">Built for FL HVAC Class B Business &amp; Finance &middot; aligned to <i>The Builder's Guide to Accounting</i>.<br>This is a study aid, not the official exam.</p>
+  `;
+  updateWho();
+}
+
+/* ---- Study principles ---- */
+function studyMenu(){
+  const items=AREAS.map(a=>`
+    <div class="tile" onclick="go(()=>studyArea('${a.id}'))">
+      <div class="ic">${a.icon}</div><h3>${a.name}</h3><p>${a.summary}</p>
+    </div>`).join("");
+  $("#view").innerHTML=`<button class="back" onclick="back()">‹ Home</button>
+    <h2 style="margin:6px 0 2px">Study Principles</h2>
+    <p class="muted" style="margin-top:0">Pick an area. Read the principles, then test yourself when ready.</p>
+    <div class="grid">${items}</div>`;
+}
+function studyArea(id){
+  const a=areaById(id);
+  const list=a.principles.map((p,i)=>`<li>${escapeHtml(p)}</li>`).join("");
+  $("#view").innerHTML=`<button class="back" onclick="back()">‹ Study areas</button>
+    <div class="card">
+      <div class="row" style="align-items:center;gap:10px"><div style="font-size:26px">${a.icon}</div>
+        <h2 style="margin:0">${a.name}</h2></div>
+      <ul class="clean" style="font-size:16px">${list}</ul>
+    </div>
+    <div class="row">
+      <button class="btn" onclick="go(()=>quizArea('${id}'))">Quiz me on ${escapeHtml(a.name)}</button>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn sec" onclick="go(()=>flashArea('${id}'))">Flashcards for this area</button>`;
+}
+function quizArea(id){ startTest([id], 8, areaById(id).name); }
+
+/* ---- Glossary flashcards ---- */
+function glossaryMenu(){
+  const items=AREAS.map(a=>{
+    const n=GLOSSARY.filter(g=>g.area===a.id).length;
+    return `<div class="area-chip" onclick="go(()=>flashArea('${a.id}'))">${a.icon} ${a.name} <span class="muted">(${n})</span></div>`;
+  }).join("");
+  $("#view").innerHTML=`<button class="back" onclick="back()">‹ Home</button>
+    <h2 style="margin:6px 0 2px">Glossary Flashcards</h2>
+    <p class="muted" style="margin-top:0">Study all ${GLOSSARY.length} terms, or focus on one area. Tap a card to flip.</p>
+    <button class="btn" onclick="go(()=>flashArea('all'))">Shuffle all ${GLOSSARY.length} terms</button>
+    <div class="spacer"></div><div class="row tight" style="margin-top:8px">${items}</div>`;
+}
+let FLASH={list:[],i:0,flipped:false};
+function flashArea(id){
+  let list = id==="all"? GLOSSARY.slice() : GLOSSARY.filter(g=>g.area===id);
+  for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[list[i],list[j]]=[list[j],list[i]];}
+  FLASH={list, i:0, flipped:false};
+  renderFlash(id);
+}
+function renderFlash(id){
+  const c=FLASH.list[FLASH.i];
+  if(!c){ $("#view").innerHTML=`<button class="back" onclick="back()">‹ Back</button><div class="card center">No terms here.</div>`; return; }
+  DB.glossarySeen[c.t]=1; save();
+  const front=`<div class="tag">Term ${FLASH.i+1} / ${FLASH.list.length} &middot; tap to flip</div><div class="term">${escapeHtml(c.t)}</div>`;
+  const backHtml=`<div class="tag">Definition &middot; tap to flip</div><div class="term" style="font-size:19px">${escapeHtml(c.t)}</div><div class="def" style="margin-top:8px">${escapeHtml(c.d)}</div>`;
+  $("#view").innerHTML=`<button class="back" onclick="back()">‹ Glossary</button>
+    <div class="card flash" onclick="flipCard('${id}')">${FLASH.flipped?backHtml:front}</div>
+    <div class="row">
+      <button class="btn sec sm" style="flex:1" onclick="prevCard('${id}')">‹ Prev</button>
+      <button class="btn sm" style="flex:2" onclick="flipCard('${id}')">${FLASH.flipped?"Show term":"Show definition"}</button>
+      <button class="btn sec sm" style="flex:1" onclick="nextCard('${id}')">Next ›</button>
+    </div>`;
+}
+function flipCard(id){ FLASH.flipped=!FLASH.flipped; renderFlash(id); }
+function nextCard(id){ FLASH.i=(FLASH.i+1)%FLASH.list.length; FLASH.flipped=false; renderFlash(id); }
+function prevCard(id){ FLASH.i=(FLASH.i-1+FLASH.list.length)%FLASH.list.length; FLASH.flipped=false; renderFlash(id); }
+
+/* ---- Test setup ---- */
+let SEL=new Set();
+function testSetup(){
+  if(SEL.size===0) AREAS.forEach(a=>SEL.add(a.id));
+  const chips=AREAS.map(a=>`<div class="area-chip ${SEL.has(a.id)?'on':''}" onclick="toggleArea('${a.id}')">${a.icon} ${a.name}</div>`).join("");
+  $("#view").innerHTML=`<button class="back" onclick="back()">‹ Home</button>
+    <h2 style="margin:6px 0 2px">Take a Test</h2>
+    <p class="muted" style="margin-top:0">Choose one or more exam areas. You'll get a random mix of multiple-choice, math, and definition questions.</p>
+    <div class="card">
+      <div class="tag" style="margin-bottom:8px">Exam areas</div>
+      <div class="row tight">${chips}</div>
+      <div class="row tight" style="margin-top:12px">
+        <button class="btn ghost sm" onclick="selAll(true)">Select all</button>
+        <button class="btn ghost sm" onclick="selAll(false)">Clear</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="tag" style="margin-bottom:8px">How many questions?</div>
+      <div class="row tight">
+        ${[5,10,15,20].map(n=>`<button class="btn sec sm" onclick="launchTest(${n})">${n}</button>`).join("")}
+      </div>
+      <p class="note" style="margin-top:10px">Missed questions automatically come back more often. Hard questions unlock as you improve (currently up to <b>${difLabel(unlockedMaxDifficulty())}</b>).</p>
+    </div>`;
+}
+function toggleArea(id){ if(SEL.has(id))SEL.delete(id); else SEL.add(id); testSetup(); }
+function selAll(on){ SEL=new Set(); if(on) AREAS.forEach(a=>SEL.add(a.id)); testSetup(); }
+function launchTest(n){
+  if(SEL.size===0){ toast("Pick at least one area"); return; }
+  startTest([...SEL], n, "Test");
+}
+
+/* ---- Review mistakes ---- */
+function startReview(){
+  const pool=wrongPool();
+  if(pool.length===0){ toast("No missed questions yet — take a test first"); return; }
+  const list=pool.slice();
+  for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[list[i],list[j]]=[list[j],list[i]];}
+  go(()=>runTest(list,"Review Mistakes"));
+}
+
+/* ---- Test engine ---- */
+function startTest(areaIds,count,label){
+  const list=buildTest(areaIds,count);
+  if(list.length===0){ toast("No questions available"); return; }
+  go(()=>runTest(list,label));
+}
+let T=null;
+function runTest(list,label){
+  T={list,label,idx:0,attempts:0,score:0,answered:0,results:[]};
+  DB.sessions++; save();
+  renderQuestion();
+}
+function renderQuestion(){
+  if(T.idx>=T.list.length){ return renderTestDone(); }
+  const q=T.list[T.idx];
+  T.attempts=T.attempts||0;
+  const a=areaById(q.area);
+  const dClass="d"+q.d;
+  const prog=Math.round(100*T.idx/T.list.length);
+  let body="";
+  if(q.type==="mc"){
+    body=q.choices.map((c,i)=>`<button class="choice" id="ch${i}" onclick="answerMC(${i})"><span class="k">${String.fromCharCode(65+i)}</span>${escapeHtml(c)}</button>`).join("");
+  } else {
+    const ph=q.type==="math"?"Type your number…":"Type your answer…";
+    body=`<input class="txt" id="ansInput" placeholder="${ph}" autocomplete="off" ${q.type==='math'?'inputmode="decimal"':''}
+            onkeydown="if(event.key==='Enter')answerText()">
+          <div class="spacer"></div>
+          <button class="btn" onclick="answerText()">Check answer</button>`;
+  }
+  $("#view").innerHTML=`
+    <button class="back" onclick="quitTest()">‹ End session</button>
+    <div class="progressbar" style="margin:6px 0 14px"><i style="width:${prog}%"></i></div>
+    <div class="row" style="justify-content:space-between;align-items:center">
+      <span class="pill">${a.icon} ${a.name}</span>
+      <span class="pill ${dClass}">${difLabel(q.d)} &middot; ${q.type==='mc'?'Multiple choice':q.type==='math'?'Math':'Definition'}</span>
+    </div>
+    <div class="card" style="margin-top:10px">
+      <div class="note">Question ${T.idx+1} of ${T.list.length} &middot; attempt ${T.attempts+1} of 3</div>
+      <h3 style="margin:8px 0 14px;font-size:19px">${escapeHtml(q.q)}</h3>
+      <div id="qbody">${body}</div>
+      <div id="fb"></div>
+    </div>`;
+  const inp=$("#ansInput"); if(inp) inp.focus();
+}
+
+function recordResult(q,correct){
+  const s=qstat(q.id); s.seen++; DB.seen++;
+  if(correct){ s.correct++; s.streak=(s.streak||0)+1; DB.correct++; T.score++; }
+  else { s.wrong++; s.streak=0; }
+  save();
+}
+
+function answerMC(i){
+  const q=T.list[T.idx];
+  if(T._locked) return;
+  const correct = i===q.answer;
+  if(correct){
+    T._locked=true;
+    $("#ch"+i).classList.add("correct");
+    document.querySelectorAll(".choice").forEach((b,idx)=>{if(idx!==i)b.classList.add("dim");b.onclick=null;});
+    recordResult(q,true);
+    showFeedback("good",`<b>Correct!</b> ${escapeHtml(q.exp)}`,true);
+  } else {
+    $("#ch"+i).classList.add("wrong"); $("#ch"+i).classList.add("dim"); $("#ch"+i).onclick=null;
+    T.attempts++;
+    handleWrong(q,false);
+  }
+}
+function answerText(){
+  const q=T.list[T.idx]; if(T._locked) return;
+  const val=$("#ansInput").value;
+  if(!val||!val.trim()){ toast("Type something first"); return; }
+  let correct = q.type==="math" ? checkMath(val,q.answer,q.tol) : checkDef(val,q.accept);
+  if(correct){
+    T._locked=true; recordResult(q,true);
+    showFeedback("good",`<b>Correct!</b> ${escapeHtml(q.exp)}`,true);
+  } else {
+    T.attempts++; handleWrong(q,true);
+  }
+}
+function handleWrong(q,isText){
+  if(T.attempts>=3){
+    T._locked=true; recordResult(q,false);
+    if(q.type==="mc"){ const b=document.querySelectorAll(".choice")[q.answer]; if(b){b.classList.remove("dim");b.classList.add("correct");} }
+    let ans = q.type==="mc"? q.choices[q.answer] : (q.type==="math"? formatNum(q.answer) : q.exp);
+    showFeedback("reveal",`<b>The answer:</b> ${q.type==='mc'?escapeHtml(ans):(q.type==='math'?escapeHtml(String(ans)):'')} <br><span style="opacity:.95">${escapeHtml(q.exp)}</span>`,true);
+  } else {
+    const hint=q.hints[Math.min(T.attempts-1,q.hints.length-1)];
+    showFeedback("hint",`<b>Not quite.</b> Hint: ${escapeHtml(hint)} <span class="muted">(attempt ${T.attempts+1} of 3)</span>`,false);
+    if(isText){ const inp=$("#ansInput"); if(inp){inp.value="";inp.focus();} }
+  }
+}
+function formatNum(n){ return (Math.round(n*100)/100).toLocaleString(); }
+function showFeedback(kind,html,done){
+  const fb=$("#fb");
+  fb.innerHTML=`<div class="feedback ${kind}">${html}</div>`;
+  if(done){
+    fb.innerHTML+=`<button class="btn" onclick="nextQuestion()">${T.idx+1>=T.list.length?'See results':'Next question'} ›</button>`;
+  }
+}
+function nextQuestion(){ T.idx++; T.attempts=0; T._locked=false; renderQuestion(); }
+function quitTest(){ if(T && T.answered>0){} back(); }
+function renderTestDone(){
+  const pct = T.list.length? Math.round(100*T.score/T.list.length):0;
+  let msg = pct>=90?"Outstanding — you're exam-ready on this set.":pct>=75?"Solid work. A little polish and you're there.":pct>=50?"Good progress. Review the misses and run it again.":"Early days — keep grinding, it compounds fast.";
+  const stillWrong=wrongPool().length;
+  $("#view").innerHTML=`
+    <div class="card center">
+      <div class="tag">${escapeHtml(T.label)} complete</div>
+      <div class="big" style="color:var(--teal);margin:6px 0">${T.score}/${T.list.length}</div>
+      <div class="progressbar" style="margin:8px 0"><i style="width:${pct}%"></i></div>
+      <p style="margin:10px 0 0">${msg}</p>
+    </div>
+    <div class="row">
+      ${stillWrong? `<button class="btn" onclick="startReview()">Review ${stillWrong} missed ›</button>`:''}
+      <button class="btn sec" onclick="home()">Back to home</button>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn ghost" onclick="go(()=>runTest(T.list,T.label))">Retake this set</button>`;
+  NAV=[home];
+}
+
+/* ---- Stats ---- */
+function statsView(){
+  const rows=AREAS.map(a=>{
+    const qs=QUESTIONS.filter(q=>q.area===a.id);
+    let seen=0,correct=0,mastered=0;
+    qs.forEach(q=>{const s=DB.qstats[q.id]; if(s){seen+=s.seen;correct+=s.correct; if(s.correct>=2&&s.streak>=2)mastered++;}});
+    const acc=seen?Math.round(100*correct/seen):0;
+    const mpct=Math.round(100*mastered/qs.length);
+    const dot = mpct>=80?'g':mpct>=40?'y':'r';
+    return `<div class="statline"><div><span class="dot ${dot}"></span>${a.icon} ${a.name}</div>
+      <div class="muted">${mastered}/${qs.length} mastered &middot; ${acc}% acc</div></div>`;
+  }).join("");
+  const weak=AREAS.map(a=>{
+    const qs=QUESTIONS.filter(q=>q.area===a.id); let mastered=0;
+    qs.forEach(q=>{const s=DB.qstats[q.id]; if(s&&s.correct>=2&&s.streak>=2)mastered++;});
+    return {a,gap:qs.length-mastered};
+  }).sort((x,y)=>y.gap-x.gap)[0];
+  $("#view").innerHTML=`<button class="back" onclick="back()">‹ Home</button>
+    <h2 style="margin:6px 0 2px">My Stats</h2>
+    <div class="card">
+      <div class="row" style="justify-content:space-around;text-align:center">
+        <div><div class="big">${accuracy()}%</div><div class="note">accuracy</div></div>
+        <div><div class="big" style="color:var(--teal)">${masteredCount()}</div><div class="note">mastered</div></div>
+        <div><div class="big">${DB.seen}</div><div class="note">answered</div></div>
+      </div>
+    </div>
+    <div class="card">${rows}</div>
+    ${weak&&weak.gap>0?`<div class="card"><div class="tag">Suggested focus</div>
+      <p style="margin:6px 0 10px">Your biggest gap is <b>${weak.a.name}</b>. Knock it out next.</p>
+      <button class="btn" onclick="startTest(['${weak.a.id}'],8,'${weak.a.name}')">Drill ${escapeHtml(weak.a.name)} ›</button></div>`:''}
+    <button class="btn ghost" onclick="resetProgress()">Reset ${escapeHtml(USER)}'s progress</button>`;
+}
+function resetProgress(){
+  if(confirm("Reset all progress for "+USER+"? This can't be undone.")){
+    DB={qstats:{},seen:0,correct:0,sessions:0,glossarySeen:{}}; save(); toast("Progress reset"); home();
+  }
+}
+
+/* ---- Help ---- */
+function showHelp(){
+  const isiOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  $("#view").innerHTML=`<button class="back" onclick="home()">‹ Home</button>
+    <h2 style="margin:6px 0 2px">How to Use</h2>
+    <div class="card">
+      <ul class="clean">
+        <li><b>Study Principles</b> — read the core concepts for each exam area, then quiz yourself.</li>
+        <li><b>Glossary Flashcards</b> — tap a card to flip between term and definition.</li>
+        <li><b>Take a Test</b> — pick areas and length; you'll get mixed multiple-choice, math, and definition questions.</li>
+        <li><b>Hints &amp; 3 tries</b> — miss one and you get a hint and another shot. After 3 misses, the answer and explanation are shown so you learn it.</li>
+        <li><b>It adapts</b> — questions you miss come back more often, and harder questions unlock as your accuracy climbs.</li>
+        <li><b>Review Mistakes</b> — drills only the ones you've been getting wrong.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="tag">Put it on your phone</div>
+      ${isiOS?
+        `<p style="margin:6px 0">In <b>Safari</b>: tap the <b>Share</b> icon → <b>Add to Home Screen</b>. It opens like an app, full screen.</p>`:
+        `<p style="margin:6px 0">On <b>Android/Chrome</b>: tap the <b>⋮</b> menu → <b>Add to Home screen</b>. On a computer, just bookmark it.</p>`}
+      <p class="note">Your progress saves automatically on each device. No login, fully private.</p>
+    </div>
+    <div class="card">
+      <div class="tag">Share with your study partner</div>
+      <p style="margin:6px 0">Send them this single HTML file (text, email, AirDrop, etc.). They open it the same way. Each person's progress is separate.</p>
+      <p class="note">Two people on one phone? Tap "studying as" at the top to switch names.</p>
+    </div>`;
+  NAV=[home,showHelp];
+}
+
+/* ----------------------------- BOOT ----------------------------- */
+initUser();
+home();
+</script>
+</body>
+</html>
